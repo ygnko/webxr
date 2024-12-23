@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebXR AR Project</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <script type="module">
+        // بارگذاری کتابخانه‌ها از CDN
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js';
+        import { ARButton } from 'https://cdn.jsdelivr.net/npm/three@0.153.0/examples/jsm/webxr/ARButton.js';
+
+        // ایجاد صحنه
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+
+        // ایجاد رندرکننده
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.xr.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        // افزودن دکمه AR
+        document.body.appendChild(ARButton.createButton(renderer));
+
+        // نورپردازی
+        const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
+        scene.add(light);
+
+        // ایجاد یک مکعب ساده
+        const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2); // اندازه مکعب
+        const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 }); // رنگ مکعب
+        const cube = new THREE.Mesh(geometry, material); // ایجاد مش از هندسه و متریال
+        cube.position.set(0, 0, -1); // قرار دادن مکعب در یک متر جلوی دوربین
+        scene.add(cube);
+
+        // حلقه رندر
+        function animate() {
+            renderer.setAnimationLoop(() => {
+                renderer.render(scene, camera);
+            });
+        }
+        animate();
+    </script>
+</body>
+</html>
